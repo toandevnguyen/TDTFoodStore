@@ -1,0 +1,56 @@
+﻿
+@model IEnumerable<FoodStore.Models.Comments>
+
+@helper RenderComment(IEnumerable<FoodStore.Models.Comments> comments)
+{
+    foreach (var comment in comments.Reverse())
+    {
+
+        <li class="comment" data-id="@comment.CommentId">
+            <div class="avatar">
+                <a href="javascript:void(0);">
+                    <img src="https://ssl.gstatic.com/accounts/ui/avatar_2x.png" width="55" height="55">
+                </a>
+            </div>
+            <div data-id="@comment.CommentId" class="comment-body">
+                <header><a href="javascript:void(0);" class="userlink">@comment.UserName</a> </header>
+                <p>
+                    @comment.CommentText
+                </p>
+                <footer>
+                    <a class="reply-link" href="@comment.CommentId">Reply</a>
+                </footer>
+            </div>
+
+            @{
+                var children = Model.Where(x => x.ParentId == comment.CommentId).ToList();
+                if (children.Count() > 0)
+                {
+                    <ul data-parentid="@comment.CommentId" class="replies">
+                        @RenderComment(children)
+                    </ul>
+                }
+            }
+
+        </li>
+
+
+    }
+
+}
+
+<div id="comment-section" class="row">
+    <div class="col-sm-7">
+        <ul class="comments">
+            @RenderComment(Model.Where(x => x.ParentId == 0))
+        </ul>
+    </div>
+
+</div>
+
+
+
+@*
+
+*@
+
